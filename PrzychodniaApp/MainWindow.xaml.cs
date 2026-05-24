@@ -1,24 +1,28 @@
-﻿using System.Text;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using PrzychodniaApp.Models;
+using PrzychodniaApp.Repositories;
 
-namespace PrzychodniaApp
+namespace PrzychodniaApp.Views
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly PatientRepository _patientRepository = new PatientRepository();
+
+        // Ta właściwość będzie "źródłem" dla DataGrid
+        public ObservableCollection<Pacjenci> Patients { get; set; }
+
         public MainWindow()
         {
             InitializeComponent();
+            LoadPatients();
+            DataContext = this; // To jest kluczowe, żeby bindowanie zadziałało!
+        }
+
+        private void LoadPatients()
+        {
+            var data = _patientRepository.GetAllPatients();
+            Patients = new ObservableCollection<Pacjenci>(data);
         }
     }
 }

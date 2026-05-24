@@ -49,5 +49,10 @@ namespace PrzychodniaApp.Views
                 MessageBox.Show($"Błąd połączenia z bazą: {ex.Message}", "Błąd krytyczny", MessageBoxButton.OK, MessageBoxImage.Stop);
             }
         }
+
+        private void txtLogin_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+
+        }
     }
 }
