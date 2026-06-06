@@ -3,32 +3,73 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:PrzychodniaApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="System Zarządzania Przychodnią" Height="550" Width="900"
+        WindowStartupLocation="CenterScreen">
+
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" 
-               Text="Lista Pacjentów" 
-               Style="{StaticResource MaterialDesignHeadline4TextBlock}" 
-               Margin="0,0,0,20"/>
+        <DockPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="Lista Pacjentów" 
+                       Style="{StaticResource MaterialDesignHeadline4TextBlock}" 
+                       VerticalAlignment="Center"/>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <Button x:Name="btnAddPatient" 
+                        Content="➕ DODAJ PACJENTA" 
+                        Click="btnAddPatient_Click" 
+                        Style="{StaticResource MaterialDesignRaisedButton}"
+                        Height="40"
+                        Padding="15,0"
+                        ToolTip="Otwórz formularz rejestracji nowego pacjenta"/>
+            </StackPanel>
+        </DockPanel>
 
         <DataGrid Grid.Row="1" 
-              ItemsSource="{Binding Patients}" 
-              AutoGenerateColumns="False" 
-              CanUserAddRows="False"
-              IsReadOnly="True"
-              Style="{StaticResource MaterialDesignDataGrid}">
+                  ItemsSource="{Binding Patients}" 
+                  AutoGenerateColumns="False" 
+                  CanUserAddRows="False"
+                  IsReadOnly="True"
+                  Style="{StaticResource MaterialDesignDataGrid}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Imię" Binding="{Binding Imie}" Width="*"/>
                 <DataGridTextColumn Header="Nazwisko" Binding="{Binding Nazwisko}" Width="*"/>
                 <DataGridTextColumn Header="PESEL" Binding="{Binding Pesel}" Width="*"/>
                 <DataGridTextColumn Header="Telefon" Binding="{Binding Telefon}" Width="*"/>
+
+                <DataGridTemplateColumn Header="Akcje" Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="✏️" 
+                                        Click="btnEditPatient_Click"
+                                        Style="{StaticResource MaterialDesignFlatButton}"
+                                        Padding="5" 
+                                        Height="30" 
+                                        Width="35"
+                                        Margin="0,0,5,0"
+                                        ToolTip="Edytuj dane pacjenta"/>
+
+                                <Button Content="❌" 
+                                        Click="btnDeletePatient_Click"
+                                        Style="{StaticResource MaterialDesignFlatButton}"
+                                        Foreground="Red" 
+                                        Padding="5" 
+                                        Height="30" 
+                                        Width="35"
+                                        ToolTip="Usuń pacjenta z systemu"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
+
     </Grid>
 </Window>

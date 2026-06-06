@@ -39,12 +39,13 @@ public partial class PrzychodniaDbContext : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            // Tutaj zostaje Twój connection string, usuwasz tylko linię z #warning powyżej
             optionsBuilder.UseSqlServer("Server=DESKTOP-G58O04B\\SQLEXPRESS;Database=PrzychodniaDB;Trusted_Connection=True;TrustServerCertificate=True;");
         }
     }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // 1. Konfiguracja tabeli AUDYT
         modelBuilder.Entity<Audyt>(entity =>
         {
             entity.HasKey(e => e.IdLogu).HasName("PK__AUDYT__38DA3380E0028CF3");
@@ -62,6 +63,7 @@ public partial class PrzychodniaDbContext : DbContext
                 .HasConstraintName("FK_Audyt_Uzytkownik");
         });
 
+        // 2. Konfiguracja tabeli LEKARZE
         modelBuilder.Entity<Lekarze>(entity =>
         {
             entity.HasKey(e => e.IdUzytkownika).HasName("PK__LEKARZE__614CA422593DCC77");
@@ -83,11 +85,13 @@ public partial class PrzychodniaDbContext : DbContext
                 .HasConstraintName("FK_Lekarz_Uzytkownik");
         });
 
+        // 3. Połączona i pełna konfiguracja tabeli PACJENCI z uwzględnieniem wyzwalacza
         modelBuilder.Entity<Pacjenci>(entity =>
         {
             entity.HasKey(e => e.IdPacjenta).HasName("PK__PACJENCI__81982F5AC33A4B8B");
 
-            entity.ToTable("PACJENCI");
+            // Rejestracja wyzwalacza zabezpieczającego klauzulę OUTPUT przy operacjach INSERT
+            entity.ToTable("PACJENCI", tb => tb.HasTrigger("TRG_Pacjenci_WalidacjaFormaty"));
 
             entity.HasIndex(e => e.Pesel, "UQ__PACJENCI__48A5F7178DC47A38").IsUnique();
 
@@ -101,6 +105,7 @@ public partial class PrzychodniaDbContext : DbContext
             entity.Property(e => e.Telefon).HasMaxLength(15);
         });
 
+        // 4. Konfiguracja tabeli SL_ICD10
         modelBuilder.Entity<SlIcd10>(entity =>
         {
             entity.HasKey(e => e.Kod).HasName("PK__SL_ICD10__C41FEDBD2A9A6089");
@@ -111,6 +116,7 @@ public partial class PrzychodniaDbContext : DbContext
             entity.Property(e => e.Opis).HasMaxLength(255);
         });
 
+        // 5. Konfiguracja tabeli SL_ROLE
         modelBuilder.Entity<SlRole>(entity =>
         {
             entity.HasKey(e => e.IdRoli).HasName("PK__SL_ROLE__B4369050E3EC0116");
@@ -122,6 +128,7 @@ public partial class PrzychodniaDbContext : DbContext
             entity.Property(e => e.Nazwa).HasMaxLength(50);
         });
 
+        // 6. Konfiguracja tabeli SL_STATUSY
         modelBuilder.Entity<SlStatusy>(entity =>
         {
             entity.HasKey(e => e.IdStatusu).HasName("PK__SL_STATU__8E121CD9DDD75533");
@@ -133,6 +140,7 @@ public partial class PrzychodniaDbContext : DbContext
             entity.Property(e => e.Nazwa).HasMaxLength(50);
         });
 
+        // 7. Konfiguracja tabeli SL_USLUGI
         modelBuilder.Entity<SlUslugi>(entity =>
         {
             entity.HasKey(e => e.IdUslugi).HasName("PK__SL_USLUG__E504B1B550DE9D52");
@@ -143,6 +151,7 @@ public partial class PrzychodniaDbContext : DbContext
             entity.Property(e => e.Nazwa).HasMaxLength(100);
         });
 
+        // 8. Konfiguracja tabeli UZYTKOWNICY
         modelBuilder.Entity<Uzytkownicy>(entity =>
         {
             entity.HasKey(e => e.IdUzytkownika).HasName("PK__UZYTKOWN__614CA4226C6605F6");
@@ -161,15 +170,16 @@ public partial class PrzychodniaDbContext : DbContext
                 .HasConstraintName("FK_Uzytkownik_Rola");
         });
 
+        // 9. Konfiguracja tabeli WIZYTY
         modelBuilder.Entity<Wizyty>(entity =>
         {
             entity.HasKey(e => e.IdWizyty).HasName("PK__WIZYTY__4E043266A550AD8E");
 
             entity.ToTable("WIZYTY", tb =>
-                {
-                    tb.HasTrigger("TRG_BlokadaTerminow");
-                    tb.HasTrigger("TRG_Wizyty_Audit");
-                });
+            {
+                tb.HasTrigger("TRG_BlokadaTerminow");
+                tb.HasTrigger("TRG_Wizyty_Audit");
+            });
 
             entity.Property(e => e.DataKoniec).HasColumnType("datetime");
             entity.Property(e => e.DataStart).HasColumnType("datetime");
@@ -197,6 +207,7 @@ public partial class PrzychodniaDbContext : DbContext
                 .HasConstraintName("FK_Wizyta_ICD10");
         });
 
+        // 10. Konfiguracja tabeli WIZYTY_USLUGI
         modelBuilder.Entity<WizytyUslugi>(entity =>
         {
             entity.HasKey(e => e.IdPozycji).HasName("PK__WIZYTY_U__5331C5EC1F363515");
@@ -217,7 +228,7 @@ public partial class PrzychodniaDbContext : DbContext
         });
 
         OnModelCreatingPartial(modelBuilder);
-    }
+    } // <--- Tutaj znajdowało się poprawne zamknięcie metody OnModelCreating
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
