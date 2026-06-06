@@ -10,42 +10,41 @@ namespace PrzychodniaApp.Views
     public partial class AddPatientWindow : Window
     {
         private readonly PatientRepository _patientRepository = new PatientRepository();
-        private readonly Pacjenci _existingPatient; // Przechowa referencję do edytowanego pacjenta
-        private readonly bool _isEditMode = false;  // Flaga informująca o trybie pracy okna
+        private readonly Pacjenci _existingPatient;
+        private readonly bool _isEditMode = false;  
 
-        // 1. Konstruktor dla NOWEGO pacjenta (wywoływany przy dodawaniu)
+     
         public AddPatientWindow()
         {
             InitializeComponent();
             _isEditMode = false;
         }
 
-        // 2. Konstruktor dla EDYCJI (wywoływany przy kliknięciu ołówka w MainWindow)
+     
         public AddPatientWindow(Pacjenci patientToEdit)
         {
             InitializeComponent();
             _existingPatient = patientToEdit;
             _isEditMode = true;
 
-            // Wypełniamy formularz danymi pacjenta, którego edytujemy
+           
             txtPesel.Text = _existingPatient.Pesel;
             txtImie.Text = _existingPatient.Imie;
             txtNazwisko.Text = _existingPatient.Nazwisko;
             txtTelefon.Text = _existingPatient.Telefon;
             txtAdres.Text = _existingPatient.Adres;
 
-            // Opcjonalnie: blokada edycji PESEL (często traktuje się go jako niezmienny identyfikator)
-            // txtPesel.IsEnabled = false;
+            
         }
 
-        // Blokada wpisywania liter (obsługuje tylko cyfry)
+        // Blokada wpisywania liter 
         private void OnlyNumbers_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             Regex regex = new Regex("[^0-9]+");
             e.Handled = regex.IsMatch(e.Text);
         }
 
-        // Logika przycisku Zapisz (obsługuje Zmiany lub Nowy wpis)
+        // Logika przycisku Zapisz 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
             // Walidacja pustych pól
@@ -64,7 +63,7 @@ namespace PrzychodniaApp.Views
                 return;
             }
 
-            // Walidacja długości telefonu (jeśli podano)
+            // Walidacja długości telefonu 
             if (!string.IsNullOrWhiteSpace(txtTelefon.Text) && txtTelefon.Text.Length != 9)
             {
                 MessageBox.Show("Numer telefonu must składać się z dokładnie 9 cyfr!", "Błąd walidacji", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -72,9 +71,7 @@ namespace PrzychodniaApp.Views
             }
 
             if (_isEditMode)
-            {
-                // --- TRYB EDYCJI ---
-                _existingPatient.Pesel = txtPesel.Text;
+            {    _existingPatient.Pesel = txtPesel.Text;
                 _existingPatient.Imie = txtImie.Text;
                 _existingPatient.Nazwisko = txtNazwisko.Text;
                 _existingPatient.Telefon = txtTelefon.Text;
@@ -93,7 +90,7 @@ namespace PrzychodniaApp.Views
             }
             else
             {
-                // --- TRYB DODAWANIA ---
+             
                 var newPatient = new Pacjenci
                 {
                     Pesel = txtPesel.Text,

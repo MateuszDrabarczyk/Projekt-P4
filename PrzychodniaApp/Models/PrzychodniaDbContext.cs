@@ -85,12 +85,12 @@ public partial class PrzychodniaDbContext : DbContext
                 .HasConstraintName("FK_Lekarz_Uzytkownik");
         });
 
-        // 3. Połączona i pełna konfiguracja tabeli PACJENCI z uwzględnieniem wyzwalacza
+        // 3. Połączona i pełna konfiguracja tabeli PACJENCI 
         modelBuilder.Entity<Pacjenci>(entity =>
         {
             entity.HasKey(e => e.IdPacjenta).HasName("PK__PACJENCI__81982F5AC33A4B8B");
 
-            // Rejestracja wyzwalacza zabezpieczającego klauzulę OUTPUT przy operacjach INSERT
+
             entity.ToTable("PACJENCI", tb => tb.HasTrigger("TRG_Pacjenci_WalidacjaFormaty"));
 
             entity.HasIndex(e => e.Pesel, "UQ__PACJENCI__48A5F7178DC47A38").IsUnique();
@@ -228,7 +228,7 @@ public partial class PrzychodniaDbContext : DbContext
         });
 
         OnModelCreatingPartial(modelBuilder);
-    } // <--- Tutaj znajdowało się poprawne zamknięcie metody OnModelCreating
+    }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

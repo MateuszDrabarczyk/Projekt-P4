@@ -7,7 +7,7 @@ namespace PrzychodniaApp.Views
 {
     public partial class LoginWindow : Window
     {
-        // Pole zadeklarowane poprawnie na poziomie klasy
+       
         private readonly UserRepository _userRepository = new UserRepository();
 
         public LoginWindow()
@@ -28,13 +28,33 @@ namespace PrzychodniaApp.Views
 
             try
             {
-                // Wywołanie logiki z Twojego UserRepository
+             
                 var user = _userRepository.Login(login, haslo);
 
                 if (user != null)
                 {
-                    // Jeśli logowanie się uda, otwieramy MainWindow
-                    MainWindow main = new MainWindow();
+                    
+                    try
+                    {
+                        using (var dbContext = new PrzychodniaDbContext())
+                        {
+                            var loginLog = new Audyt
+                            {
+                                DataLogu = DateTime.Now,
+                                Akcja = $"UDANE LOGOWANIE: Użytkownik [{user.Login}] zalogował się do systemu.",
+                                IdUzytkownika = user.IdUzytkownika
+                            };
+
+                            dbContext.Audyts.Add(loginLog);
+                            dbContext.SaveChanges();
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        
+                    }
+                   
+                    MainWindow main = new MainWindow(user.IdUzytkownika, user.IdRoli);
                     main.Show();
                     this.Close();
                 }
@@ -45,14 +65,14 @@ namespace PrzychodniaApp.Views
             }
             catch (Exception ex)
             {
-                // Wyświetla błąd, jeśli np. baza danych nie jest włączona
+          
                 MessageBox.Show($"Błąd połączenia z bazą: {ex.Message}", "Błąd krytyczny", MessageBoxButton.OK, MessageBoxImage.Stop);
             }
         }
 
         private void txtLogin_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-
+       
         }
     }
 }

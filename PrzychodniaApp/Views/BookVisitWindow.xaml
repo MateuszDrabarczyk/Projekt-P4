@@ -1,0 +1,57 @@
+﻿<Window x:Class="PrzychodniaApp.Views.BookVisitWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="Dane Wizyty Lekarskiej" Height="680" Width="460"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        Background="{DynamicResource MaterialDesignPaper}">
+    <Grid Margin="15">
+        <materialDesign:Card Padding="20" UniformCornerRadius="8">
+            <StackPanel>
+                <TextBlock x:Name="lblHeader" Text="Rejestracja Wizyty" Style="{StaticResource MaterialDesignHeadline5TextBlock}" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+
+                <ComboBox x:Name="cmbDoctor" materialDesign:HintAssist.Hint="Lekarz prowadzący (Numer PWZ) *" 
+                          Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                          DisplayMemberPath="NumerPwz" Margin="0,0,0,12"/>
+
+                <Grid Margin="0,0,0,12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="txtPatientDisplay" Grid.Column="0" IsReadOnly="True"
+                             materialDesign:HintAssist.Hint="Pacjent *" 
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                    <Button x:Name="btnSearchPatient" Grid.Column="1" Content="🔍 SZUKAJ" Click="btnSearchPatient_Click" 
+                            Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="10,0,0,0" VerticalAlignment="Bottom"/>
+                </Grid>
+
+                <DatePicker x:Name="dtStartDate" materialDesign:HintAssist.Hint="Data Rozpoczęcia *" 
+                            SelectedDateChanged="dtStartDate_SelectedDateChanged" Margin="0,0,0,5"/>
+                <TextBox x:Name="txtStartTime" materialDesign:HintAssist.Hint="Godzina Rozpoczęcia (Format HH:mm, np. 14:30) *" 
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}" MaxLength="5" 
+                         TextChanged="txtStartTime_TextChanged" Margin="0,0,0,15"/>
+
+                <Border BorderBrush="{DynamicResource MaterialDesignDivider}" BorderThickness="0,1,0,0" Margin="0,5,0,10"/>
+
+                <TextBlock Text="Czas zakończenia wizyty:" Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueMidBrush}" FontWeight="Bold" Margin="0,0,0,5"/>
+
+                <DatePicker x:Name="dtEndDate" materialDesign:HintAssist.Hint="Data Zakończenia *" Margin="0,0,0,5"/>
+                <TextBox x:Name="txtEndTime" materialDesign:HintAssist.Hint="Godzina Zakończenia (Format HH:mm, np. 15:00) *" 
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}" MaxLength="5" 
+                         TextChanged="txtEndTime_TextChanged" Margin="0,0,0,15"/>
+
+                <TextBox x:Name="txtIcd10" materialDesign:HintAssist.Hint="Rozpoznanie (Kod ICD-10) - Opcjonalnie" 
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}" MaxLength="10" Margin="0,0,0,12"/>
+
+                <TextBox x:Name="txtNotes" materialDesign:HintAssist.Hint="Komentarz / Notatki medyczne - Opcjonalnie" 
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="0,0,0,25" Height="50" AcceptsReturn="True"/>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,0,0">
+                    <Button Content="Anuluj" IsCancel="True" Style="{StaticResource MaterialDesignFlatButton}" Margin="0,0,10,0"/>
+                    <Button x:Name="btnSave" Content="Zapisz Wizytę" Click="btnSave_Click" Style="{StaticResource MaterialDesignRaisedButton}"/>
+                </StackPanel>
+            </StackPanel>
+        </materialDesign:Card>
+    </Grid>
+</Window>

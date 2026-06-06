@@ -6,70 +6,124 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:PrzychodniaApp"
         mc:Ignorable="d"
-        Title="System Zarządzania Przychodnią" Height="550" Width="900"
+        Title="System Zarządzania Przychodnią Medyczną" 
+        Height="650" Width="950"
+        MinHeight="550" MinWidth="850" 
         WindowStartupLocation="CenterScreen">
 
-    <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
-        <DockPanel Grid.Row="0" Margin="0,0,0,20">
-            <TextBlock Text="Lista Pacjentów" 
-                       Style="{StaticResource MaterialDesignHeadline4TextBlock}" 
-                       VerticalAlignment="Center"/>
+        <Button x:Name="btnLogout" Grid.Column="0" Content="🔑🚪" Click="btnLogout_Click"
+                Style="{StaticResource MaterialDesignRaisedButton}" 
+                Background="#1565C0" BorderBrush="{x:Null}" Foreground="White"
+                Height="40" Width="55" VerticalAlignment="Bottom" Margin="0,0,0,25" Padding="0"
+                HorizontalAlignment="Center"
+                Panel.ZIndex="99" ToolTip="Wyloguj się z systemu"/>
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                <Button x:Name="btnAddPatient" 
-                        Content="➕ DODAJ PACJENTA" 
-                        Click="btnAddPatient_Click" 
-                        Style="{StaticResource MaterialDesignRaisedButton}"
-                        Height="40"
-                        Padding="15,0"
-                        ToolTip="Otwórz formularz rejestracji nowego pacjenta"/>
-            </StackPanel>
-        </DockPanel>
+        <TabControl x:Name="mainTabControl" Grid.Column="0" Grid.ColumnSpan="2" 
+                    materialDesign:ColorZoneAssist.Mode="PrimaryMid" 
+                    Style="{StaticResource MaterialDesignNavigationRailTabControl}">
 
-        <DataGrid Grid.Row="1" 
-                  ItemsSource="{Binding Patients}" 
-                  AutoGenerateColumns="False" 
-                  CanUserAddRows="False"
-                  IsReadOnly="True"
-                  Style="{StaticResource MaterialDesignDataGrid}">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Imię" Binding="{Binding Imie}" Width="*"/>
-                <DataGridTextColumn Header="Nazwisko" Binding="{Binding Nazwisko}" Width="*"/>
-                <DataGridTextColumn Header="PESEL" Binding="{Binding Pesel}" Width="*"/>
-                <DataGridTextColumn Header="Telefon" Binding="{Binding Telefon}" Width="*"/>
+            <TabItem Header="PACJENCI">
+                <Grid Margin="20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
 
-                <DataGridTemplateColumn Header="Akcje" Width="Auto">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <Button Content="✏️" 
-                                        Click="btnEditPatient_Click"
-                                        Style="{StaticResource MaterialDesignFlatButton}"
-                                        Padding="5" 
-                                        Height="30" 
-                                        Width="35"
-                                        Margin="0,0,5,0"
-                                        ToolTip="Edytuj dane pacjenta"/>
+                    <DockPanel Grid.Row="0" Margin="0,0,0,20">
+                        <TextBlock Text="Katalog Pacjentów" Style="{StaticResource MaterialDesignHeadline4TextBlock}" VerticalAlignment="Center"/>
 
-                                <Button Content="❌" 
-                                        Click="btnDeletePatient_Click"
-                                        Style="{StaticResource MaterialDesignFlatButton}"
-                                        Foreground="Red" 
-                                        Padding="5" 
-                                        Height="30" 
-                                        Width="35"
-                                        ToolTip="Usuń pacjenta z systemu"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <materialDesign:PackIcon Kind="AccountCircle" Foreground="#1565C0" Width="20" Height="20" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                            <TextBlock x:Name="txtLoggedUser" Text="Zalogowano jako: ..." 
+                                       FontWeight="SemiBold" Foreground="#333333" VerticalAlignment="Center" FontSize="13" Margin="0,0,20,0"/>
 
+                            <Button x:Name="btnAddPatient" Content="➕ DODAJ PACJENTA" Click="btnAddPatient_Click" Style="{StaticResource MaterialDesignRaisedButton}" Height="40" Padding="15,0"/>
+                        </StackPanel>
+                    </DockPanel>
+
+                    <DataGrid x:Name="dgPatients" Grid.Row="1" ItemsSource="{Binding Patients}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" Style="{StaticResource MaterialDesignDataGrid}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Imię" Binding="{Binding Imie}" Width="*"/>
+                            <DataGridTextColumn Header="Nazwisko" Binding="{Binding Nazwisko}" Width="*"/>
+                            <DataGridTextColumn Header="PESEL" Binding="{Binding Pesel}" Width="*"/>
+                            <DataGridTextColumn Header="Telefon" Binding="{Binding Telefon}" Width="*"/>
+                            <DataGridTemplateColumn Header="Akcje" Width="Auto">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Content="✏️" Click="btnEditPatient_Click" Style="{StaticResource MaterialDesignFlatButton}" Padding="5" Height="30" Width="35" Margin="0,0,5,0"/>
+                                            <Button Content="❌" Click="btnDeletePatient_Click" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Red" Padding="5" Height="30" Width="35"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="WIZYTY">
+                <Grid Margin="20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <DockPanel Grid.Row="0" Margin="0,0,0,20">
+                        <TextBlock Text="Harmonogram Wizyt Lekarskich" Style="{StaticResource MaterialDesignHeadline4TextBlock}" VerticalAlignment="Center"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <Button x:Name="btnBookVisit" Content="🗓️ UMAWIAJ WIZYTĘ" Click="btnBookVisit_Click" Style="{StaticResource MaterialDesignRaisedButton}" Height="40" Padding="15,0"/>
+                        </StackPanel>
+                    </DockPanel>
+
+                    <DataGrid Grid.Row="1" x:Name="dgVisits" ItemsSource="{Binding Visits}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" Style="{StaticResource MaterialDesignDataGrid}" MouseDoubleClick="dgVisits_MouseDoubleClick">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Data Rozpoczęcia" Binding="{Binding DataStart, StringFormat={}{0:dd.MM.yyyy HH:mm}}" Width="*"/>
+                            <DataGridTextColumn Header="Data Zakończenia" Binding="{Binding DataKoniec, StringFormat={}{0:dd.MM.yyyy HH:mm}}" Width="*"/>
+                            <DataGridTextColumn Header="ID Pacjenta" Binding="{Binding IdPacjenta}" Width="Auto"/>
+                            <DataGridTextColumn Header="ID Lekarza" Binding="{Binding IdLekarza}" Width="Auto"/>
+                            <DataGridTextColumn Header="Rozpoznanie (ICD-10)" Binding="{Binding KodIcd10}" Width="*"/>
+                            <DataGridTemplateColumn Header="Akcje" Width="Auto">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Content="✏️" Click="btnEditVisit_Click" Style="{StaticResource MaterialDesignFlatButton}" Padding="5" Height="30" Width="35" Margin="0,0,5,0" ToolTip="Edytuj termin lub dane wizyty"/>
+                                            <Button Content="❌" Click="btnDeleteVisit_Click" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Red" Padding="5" Height="30" Width="35" ToolTip="Odwołaj wizytę"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <TabItem x:Name="tabAdminAudit" Header="🛡️ LOGI AUDYTOWE (ADMIN)" Visibility="Collapsed">
+                <Grid Margin="20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="Rejestr Zdarzeń Bezpieczeństwa (RODO)" Style="{StaticResource MaterialDesignHeadline4TextBlock}" Margin="0,0,0,20"/>
+
+                    <DataGrid Grid.Row="1" x:Name="dgAuditLogs" ItemsSource="{Binding AuditLogs}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" Style="{StaticResource MaterialDesignDataGrid}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding IdLogu}" Width="Auto"/>
+                            <DataGridTextColumn Header="Data Zdarzenia" Binding="{Binding DataLogu, StringFormat={}{0:dd.MM.yyyy HH:mm:ss}}" Width="*"/>
+                            <DataGridTextColumn Header="Wykonana Akcja" Binding="{Binding Akcja}" Width="2*"/>
+                            <DataGridTextColumn Header="ID Użytkownika" Binding="{Binding IdUzytkownika}" Width="Auto"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+        </TabControl>
     </Grid>
 </Window>
